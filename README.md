@@ -11,6 +11,13 @@ A full-stack Loan Management System built using Python Flask, PostgreSQL, HTML, 
 - EMI calculator
 - Automatic dashboard data refresh
 
+## Database
+The project uses PostgreSQL for storing customer and loan application information.
+
+The `database/` directory contains:
+- `schema.sql` – SQL scripts for creating the customers and applications tables.
+- `queries.sql` – SQL queries for retrieving customer details, loan applications, dashboard statistics, joins, and aggregations.
+
 ## Tech Stack
 - **Backend:** Python, Flask
 - **Database:** PostgreSQL
