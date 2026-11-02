@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Management Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <h1>Loan Management Dashboard</h1>
+
+    <div class="dashboard">
+        <div class="card">
+            <h3>Total Customers</h3>
+            <p id="totalCustomers">Loading...</p>
+        </div>
+
+        <div class="card">
+            <h3>Total Applications</h3>
+            <p id="totalApplications">Loading...</p>
+        </div>
+
+        <div class="card">
+            <h3>Approved Loans</h3>
+            <p id="approvedLoans">Loading...</p>
+        </div>
+
+        <div class="card">
+            <h3>Pending Loans</h3>
+            <p id="pendingLoans">Loading...</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Total Loan Amount</h3>
+        <p id="totalLoanAmount">Loading...</p>
+    </div>
+
+    <div class="card">
+        <h2>Recent Loan Applications</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Customer</th>
+                    <th>PAN</th>
+                    <th>Loan Amount</th>
+                    <th>Loan Type</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody id="applicationsTable">
+                <tr>
+                    <td colspan="6">Loading...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h2>All Customers</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Customer Name</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th>PAN Number</th>
+                </tr>
+            </thead>
+
+            <tbody id="customersTable">
+                <tr>
+                    <td colspan="4">Loading...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        async function loadDashboard() {
+            try {
+                const response = await fetch(
+                    "http://127.0.0.1:5000/api/dashboard"
+                );
+
+                if (!response.ok) {
+                    throw new Error("API request failed");
+                }
+
+                const data = await response.json();
+
+                document.getElementById("totalCustomers").textContent =
+                    data.total_customers;
+
+                document.getElementById("totalApplications").textContent =
+                    data.total_applications;
+
+                document.getElementById("approvedLoans").textContent =
+                    data.approved_loans;
+
+                document.getElementById("pendingLoans").textContent =
+                    data.pending_loans;
+
+                document.getElementById("totalLoanAmount").textContent =
+                    "₹" + data.total_loan_amount.toLocaleString("en-IN");
+
+            } catch (error) {
+                console.error(error);
+                alert("Unable to load dashboard data.");
+            }
+        }
+
+        async function loadApplications() {
+            try {
+                const response = await fetch(
+                    "/api/recent-applications"
+                );
+
+                if (!response.ok) {
+                    throw new Error("Unable to fetch applications");
+                }
+
+                const applications = await response.json();
+
+                const table = document.getElementById("applicationsTable");
+
+                table.innerHTML = "";
+
+                if (applications.length === 0) {
+                    table.innerHTML = `
+                <tr>
+                    <td colspan="6">No applications found</td>
+                </tr>
+            `;
+                    return;
+                }
+
+                applications.forEach(app => {
+                    const row = document.createElement("tr");
+
+                    row.innerHTML = `
+                <td>${app.customer_name}</td>
+                <td>${app.pan_number}</td>
+                <td>₹${app.loan_amount.toLocaleString("en-IN")}</td>
+                <td>${app.loan_type}</td>
+                <td>${app.application_date}</td>
+                <td>
+    <span class="status-badge ${app.status.toLowerCase()}">
+        ${app.status}
+    </span>
+</td>
+            `;
+
+                    table.appendChild(row);
+                });
+
+            } catch (error) {
+                console.error(error);
+                document.getElementById("applicationsTable").innerHTML =
+                    '<tr><td colspan="6">Unable to load applications</td></tr>';
+            }
+        }
+
+        async function loadCustomers() {
+            try {
+                const response = await fetch("/api/customers");
+
+                if (!response.ok) {
+                    throw new Error("Unable to fetch customers");
+                }
+
+                const customers = await response.json();
+
+                const table = document.getElementById("customersTable");
+                table.innerHTML = "";
+
+                if (customers.length === 0) {
+                    table.innerHTML = `
+                <tr>
+                    <td colspan="4">No customers found</td>
+                </tr>
+            `;
+                    return;
+                }
+
+                customers.forEach(customer => {
+                    const row = document.createElement("tr");
+
+                    row.innerHTML = `
+                <td>${customer.name}</td>
+                <td>${customer.phone || "N/A"}</td>
+                <td>${customer.email || "N/A"}</td>
+                <td>${customer.pan_number || "N/A"}</td>
+            `;
+
+                    table.appendChild(row);
+                });
+
+            } catch (error) {
+                console.error(error);
+
+                document.getElementById("customersTable").innerHTML =
+                    '<tr><td colspan="4">Unable to load customers</td></tr>';
+            }
+        }
+
+        loadDashboard();
+        loadApplications();
+        loadCustomers();
+
+        setInterval(() => {
+            loadDashboard();
+            loadApplications();
+            loadCustomers();
+        }, 30000);
+
+    </script>
+
+</body>
+
+</html>

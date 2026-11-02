@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Application Form</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <h1>Loan Application Form</h1>
+
+    <div class="form-container">
+
+        <form id="loanForm">
+
+            <label for="customerName">Customer Name</label>
+            <input type="text" id="customerName" placeholder="Enter your name" required>
+
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" placeholder="Enter phone number" required>
+
+            <label for="email">Email Address</label>
+            <input type="email" id="email" placeholder="Enter email address" required>
+
+            <label for="loanAmount">Loan Amount</label>
+            <input type="number" id="loanAmount" placeholder="Enter loan amount" required>
+
+            <label for="loanType">Loan Type</label>
+            <select id="loanType">
+                <option value="">Select Loan Type</option>
+                <option value="Personal Loan">Personal Loan</option>
+                <option value="Home Loan">Home Loan</option>
+                <option value="Education Loan">Education Loan</option>
+                <option value="Car Loan">Car Loan</option>
+            </select>
+            <label for="interestRate">Annual Interest Rate (%)</label>
+            <input type="number" id="interestRate" placeholder="Enter interest rate">
+
+            <label for="loanTenure">Loan Tenure (Years)</label>
+            <input type="number" id="loanTenure" placeholder="Enter tenure">
+
+            <p id="emiResult">Monthly EMI: ₹0</p>
+
+            <label for="panNumber">PAN Number</label>
+            <input type="text" id="panNumber" placeholder="Enter PAN number">
+
+            <button type="submit">Submit Application</button>
+
+        </form>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
